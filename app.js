@@ -4,11 +4,24 @@ const ejs = require('ejs');
 const path = require('path');
 
 
+// to know the no of photos contained in the  './public/uploads'
+const fs = require('fs');
+const dir = './public/uploads';
+
+let no_of_photos;
+
+fs.readdir(dir, (err, files) => {
+  no_of_photos = (files.length + 1);
+  console.log(no_of_photos);
+});
+
+// console.log(no_of_photos);
+
 //storage engine
 const storage = multer.diskStorage({
   destination: './public/uploads',
   filename: function(req, file , cb){
-    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+    cb(null, file.fieldname + '-' + no_of_photos + path.extname(file.originalname));
   }
 });
 
@@ -74,6 +87,14 @@ app.post('/upload', (req, res)=>{
         }
 
           }
+  });
+});
+
+
+// the problem is here in sending
+app.get('/album', (req, res)=>{
+  res.render('album', {
+    files:dir
   });
 });
 
